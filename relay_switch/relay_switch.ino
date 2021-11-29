@@ -21,12 +21,44 @@ void setup()
 }
 void loop() {
 
+  Serial.println("Enter 'powder', 'gas', or 'off'"); //Prompt User for Input
+  while (Serial.available() == 0) {
+    // Wait for User to Input Data
+  }
+  command = Serial.read(); //Read the data the user has input
+
+  switch (command) {
+  case "powder":
+    relay_SetStatus(OFF, ON, ON, OFF);//turn forward
+    Serial.println("Running powder");
+    break;
+  case "gas":
+    relay_SetStatus(ON, OFF, OFF, ON);//turn backward
+    Serial.println("Running gas");
+    break;
+  case "off":
+    relay_SetStatus(OFF, OFF, OFF, OFF);
+    Serial.println("Turning off");
+  default:
+    // statements
+    break;
+}
+
+  
+
   //We read both values and display them raw on the serial monitor
   Val1=analogRead(Hall_Sensor);            
    Serial.print(Val1);
    Val2=digitalRead(Hall_Sensor_D);
    Serial.print("\t");
    Serial.println(Val2); 
+
+   if (Val1 > 514 || Val1 < 510){
+    relay_SetStatus(ON,ON,ON,ON);
+   }
+   else{
+    relay_SetStatus(OFF, OFF, OFF, OFF);
+   }
 
    /*
    relay_SetStatus(OFF, ON, ON, OFF);//turn forward
@@ -38,6 +70,7 @@ void loop() {
    relay_SetStatus(OFF, OFF, OFF, OFF); //turn off all the relay
    delay(2000);
    */
+   
 }
 void relay_init(void)//initialize the relay
 {
