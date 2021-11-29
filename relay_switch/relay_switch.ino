@@ -16,7 +16,7 @@ void setup()
 
  //setup for hall sensor
  Serial.begin(9600);
-  pinMode(Hall_Sensor_D,INPUT);
+ pinMode(Hall_Sensor_D,INPUT);
  
 }
 void loop() {
@@ -25,24 +25,25 @@ void loop() {
   while (Serial.available() == 0) {
     // Wait for User to Input Data
   }
-  command = Serial.read(); //Read the data the user has input
+  String command = Serial.readString(); //Read the data the user has input
 
-  switch (command) {
-  case "powder":
+
+  if (command == "powder"){
     relay_SetStatus(OFF, ON, ON, OFF);//turn forward
     Serial.println("Running powder");
-    break;
-  case "gas":
+  }
+  else if (command == "gas"){
     relay_SetStatus(ON, OFF, OFF, ON);//turn backward
-    Serial.println("Running gas");
-    break;
-  case "off":
-    relay_SetStatus(OFF, OFF, OFF, OFF);
-    Serial.println("Turning off");
-  default:
-    // statements
-    break;
-}
+    Serial.println("Running powder");
+  }
+  else if (command == "off"){
+    relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
+    Serial.println("Running powder");
+  }
+  else{
+    relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
+    Serial.println("Enter a valid command");
+  }
 
   
 
