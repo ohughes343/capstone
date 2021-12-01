@@ -27,43 +27,12 @@ void setup()
 }
 void loop() {
 
-  String inputString="";
-  if (Serial.available() > 0) {
-    inputString = Serial.readString();
+  unsigned long currentMillis = millis();
 
-    // prints the received data
-    Serial.print("I received: ");
-    Serial.println(inputString);
+  if (currentMillis - previousMillis >= interval || Val1<500 || Val1>530){
+    previousMillis = currentMillis;
+    relay_SetStatus(OFF, OFF, OFF, OFF); //if it has been X seconds *or* magnet was detected, turn off the motor
   }
-
-  if (inputString == "powder"){
-        Serial.println("running powder");
-      }
-  if(inputString!=""){
-    
-    //Serial.println("Running " + inputString);
-      if (inputString == "powder"){
-        Serial.println("running powder");
-      }
-      if (inputString.equals("powder")){
-        relay_SetStatus(OFF, ON, ON, OFF);//turn forward
-        Serial.println("Running powder");
-      }
-      else if (inputString == String("gas")){
-        relay_SetStatus(ON, OFF, OFF, ON);//turn backward
-        Serial.println("Running powder");
-      }
-      else if (inputString == "off"){
-        relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
-        Serial.println("Running powder");
-    }
-  }
-
-  
-  /*else{
-    relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
-    Serial.println("Enter a valid command");
-  }*/
 
    //We read both values and display them raw on the serial monitor
    Val1=analogRead(Hall_Sensor);            
@@ -80,7 +49,7 @@ void loop() {
     relay_SetStatus(OFF, OFF, OFF, OFF);
    }
 
-   
+   /*
    relay_SetStatus(OFF, ON, ON, OFF);//turn forward
    delay(20);//delay 2s
    relay_SetStatus(OFF, OFF, OFF, OFF); //turn off all the relay
@@ -89,14 +58,8 @@ void loop() {
    delay(20);//delay 2s
    relay_SetStatus(OFF, OFF, OFF, OFF); //turn off all the relay
    delay(2000);
+   */
    
-   
-}
-
-void read_magnet_state(void){
-    
-
-   return Val1, Val2;
 }
 
 
