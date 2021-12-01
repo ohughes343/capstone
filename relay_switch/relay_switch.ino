@@ -10,6 +10,9 @@ int Val1=0,Val2=0;             //Here you can store both values, the Val2 can be
 int IN1 = 5, IN2=6, IN3=9, IN4=10;
 String command = "";
 
+unsigned long previousMillis = 0; // will store last time motor ran
+const long interval = 1000;           // interval at which to blink (milliseconds)
+
 void setup()
 {
  relay_init();//initialize the relay
@@ -62,35 +65,36 @@ void loop() {
     Serial.println("Enter a valid command");
   }*/
 
- // read_magnet_state();
+   //We read both values and display them raw on the serial monitor
+   Val1=analogRead(Hall_Sensor);            
+   Serial.print(Val1);
+   Val2=digitalRead(Hall_Sensor_D);
+   Serial.print("\t");
+   Serial.println(Val2);
+   Serial.println(Val1,Val2);
   
    if (Val1 > 514 || Val1 < 510){
-    relay_SetStatus(ON,ON,ON,ON);
+    //relay_SetStatus(ON,ON,ON,ON);
    }
    else{
     relay_SetStatus(OFF, OFF, OFF, OFF);
    }
 
-   /*
+   
    relay_SetStatus(OFF, ON, ON, OFF);//turn forward
-   delay(2000);//delay 2s
+   delay(20);//delay 2s
    relay_SetStatus(OFF, OFF, OFF, OFF); //turn off all the relay
    delay(2000);
    relay_SetStatus(ON, OFF, OFF, ON);//turn backward
-   delay(2000);//delay 2s
+   delay(20);//delay 2s
    relay_SetStatus(OFF, OFF, OFF, OFF); //turn off all the relay
    delay(2000);
-   */
+   
    
 }
 
 void read_magnet_state(void){
-   //We read both values and display them raw on the serial monitor
-   Val1=analogRead(Hall_Sensor);            
-   //Serial.print(Val1);
-   Val2=digitalRead(Hall_Sensor_D);
-   //Serial.print("\t");
-   //Serial.println(Val2); 
+    
 
    return Val1, Val2;
 }
