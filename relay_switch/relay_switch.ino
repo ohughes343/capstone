@@ -11,7 +11,7 @@ int IN1 = 5, IN2=6, IN3=9, IN4=10;
 String command = "";
 
 unsigned long previousMillis = 0; // will store last time motor ran
-const long interval = 1000;           // interval at which to blink (milliseconds)
+const long interval = 200;           // interval at which to run motor (milliseconds)
 
 void setup()
 {
@@ -20,34 +20,49 @@ void setup()
  //setup for hall sensor
  Serial.begin(9600);
  pinMode(Hall_Sensor_D,INPUT);
- 
- Serial.println("Enter 'powder', 'gas', or 'off'"); //Prompt User for Input
- 
+ String motorState = "" //string to keep track of motor; either forward, backward, or off
  
 }
 void loop() {
 
   unsigned long currentMillis = millis();
 
-  if (currentMillis - previousMillis >= interval || Val1<500 || Val1>530){
-    previousMillis = currentMillis;
-    relay_SetStatus(OFF, OFF, OFF, OFF); //if it has been X seconds *or* magnet was detected, turn off the motor
-  }
-
-   //We read both values and display them raw on the serial monitor
+  //We read both values and display them raw on the serial monitor
    Val1=analogRead(Hall_Sensor);            
    Serial.print(Val1);
    Val2=digitalRead(Hall_Sensor_D);
    Serial.print("\t");
    Serial.println(Val2);
    Serial.println(Val1,Val2);
+
+   relay_SetStatus(OFF, ON, ON, OFF);//turn forward
+   motorState = "forward"
+   Serial.println(motorState);
+
+  /*if (currentMillis - previousMillis >= interval || Val1<500 || Val1>530){
+    previousMillis = currentMillis;
+    relay_SetStatus(OFF, OFF, OFF, OFF); //if it has been X seconds *or* magnet was detected, turn off the motor
+  }
+*/
+
+  if (currentMillis - previousMillis >= interval) {
+      // save the last time you blinked the LED
+      previousMillis = currentMillis;
   
-   if (Val1 > 514 || Val1 < 510){
-    //relay_SetStatus(ON,ON,ON,ON);
-   }
-   else{
+      // if the LED is off turn it on and vice-versa:
+      if (motorState == "forward") {
+        motorState = "backward";
+      } else {
+        ledState = "forward";
+      }
+  
+      // set the LED with the ledState of the variable:
+      digitalWrite(ledPin, ledState);
+    }
+
+  if (Val1<500 || Val1>530){
     relay_SetStatus(OFF, OFF, OFF, OFF);
-   }
+  }
 
    /*
    relay_SetStatus(OFF, ON, ON, OFF);//turn forward
@@ -73,6 +88,8 @@ void relay_init(void)//initialize the relay
  pinMode(IN4, OUTPUT);
  relay_SetStatus(OFF, OFF, OFF, OFF); //turn off all the relay
 }
+
+
 //set the status of relays
 void relay_SetStatus( unsigned char status_1, unsigned char status_2, unsigned char status_3, unsigned char status_4)
 {
