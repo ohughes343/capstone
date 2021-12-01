@@ -8,7 +8,7 @@ int Val1=0,Val2=0;             //Here you can store both values, the Val2 can be
 
 //the relays connect to
 int IN1 = 5, IN2=6, IN3=9, IN4=10;
-
+String command = "";
 
 void setup()
 {
@@ -18,42 +18,52 @@ void setup()
  Serial.begin(9600);
  pinMode(Hall_Sensor_D,INPUT);
  
+ Serial.println("Enter 'powder', 'gas', or 'off'"); //Prompt User for Input
+ 
+ 
 }
 void loop() {
 
-  Serial.println("Enter 'powder', 'gas', or 'off'"); //Prompt User for Input
-  while (Serial.available() == 0) {
-    // Wait for User to Input Data
-  }
-  String command = Serial.readString(); //Read the data the user has input
+  String inputString="";
+  if (Serial.available() > 0) {
+    inputString = Serial.readString();
 
+    // prints the received data
+    Serial.print("I received: ");
+    Serial.println(inputString);
+  }
 
-  if (command == "powder"){
-    relay_SetStatus(OFF, ON, ON, OFF);//turn forward
-    Serial.println("Running powder");
-  }
-  else if (command == "gas"){
-    relay_SetStatus(ON, OFF, OFF, ON);//turn backward
-    Serial.println("Running powder");
-  }
-  else if (command == "off"){
-    relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
-    Serial.println("Running powder");
-  }
-  else{
-    relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
-    Serial.println("Enter a valid command");
+  if (inputString == "powder"){
+        Serial.println("running powder");
+      }
+  if(inputString!=""){
+    
+    //Serial.println("Running " + inputString);
+      if (inputString == "powder"){
+        Serial.println("running powder");
+      }
+      if (inputString.equals("powder")){
+        relay_SetStatus(OFF, ON, ON, OFF);//turn forward
+        Serial.println("Running powder");
+      }
+      else if (inputString == String("gas")){
+        relay_SetStatus(ON, OFF, OFF, ON);//turn backward
+        Serial.println("Running powder");
+      }
+      else if (inputString == "off"){
+        relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
+        Serial.println("Running powder");
+    }
   }
 
   
+  /*else{
+    relay_SetStatus(OFF, OFF, OFF, OFF);//turn off
+    Serial.println("Enter a valid command");
+  }*/
 
-  //We read both values and display them raw on the serial monitor
-  Val1=analogRead(Hall_Sensor);            
-   Serial.print(Val1);
-   Val2=digitalRead(Hall_Sensor_D);
-   Serial.print("\t");
-   Serial.println(Val2); 
-
+ // read_magnet_state();
+  
    if (Val1 > 514 || Val1 < 510){
     relay_SetStatus(ON,ON,ON,ON);
    }
@@ -73,6 +83,20 @@ void loop() {
    */
    
 }
+
+void read_magnet_state(void){
+   //We read both values and display them raw on the serial monitor
+   Val1=analogRead(Hall_Sensor);            
+   //Serial.print(Val1);
+   Val2=digitalRead(Hall_Sensor_D);
+   //Serial.print("\t");
+   //Serial.println(Val2); 
+
+   return Val1, Val2;
+}
+
+
+
 void relay_init(void)//initialize the relay
 {
  //set all the relays as OUTPUT
